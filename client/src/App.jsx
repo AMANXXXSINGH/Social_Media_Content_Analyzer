@@ -3,6 +3,7 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
 function App() {
+  const API_URL = import.meta.env.VITE_API_URL ;
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState("");
@@ -28,7 +29,7 @@ function App() {
 
     try {
       setLoading(true);
-      const res = await axios.post("https://social-media-content-analyzer-sxzk.onrender.com/upload", formData);
+      const res = await axios.post(`${API_URL}/upload`, formData);
       setText(res.data.text);
       setSuggestions(res.data.suggestions);
     } catch (err) {
