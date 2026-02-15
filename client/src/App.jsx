@@ -28,7 +28,7 @@ function App() {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/upload", formData);
+      const res = await axios.post("https://social-media-content-analyzer-sxzk.onrender.com/upload", formData);
       setText(res.data.text);
       setSuggestions(res.data.suggestions);
     } catch (err) {
