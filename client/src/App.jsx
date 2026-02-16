@@ -5,14 +5,14 @@ import ReactMarkdown from "react-markdown";
 function App() {
   console.log("ENV VALUE:", import.meta.env.VITE_API_URL);
 
-  const API_URL = import.meta.env.VITE_API_URL ;
+  const API_URL = "https://social-media-content-analyzer-sxzk.onrender.com";
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState("");
   const [loading, setLoading] = useState(false);
 
   const suggestionsRef = useRef(null);
-console.log("API URL:", API_URL);
+  console.log("API URL:", API_URL);
   // 🔥 Auto scroll when suggestions update
   useEffect(() => {
     if (suggestions && suggestionsRef.current) {
@@ -63,7 +63,9 @@ console.log("API URL:", API_URL);
         </button>
       </div>
 
-      {loading && <p className="text-blue-600 font-semibold">⏳ Analyzing...</p>}
+      {loading && (
+        <p className="text-blue-600 font-semibold">⏳ Analyzing...</p>
+      )}
 
       {text && (
         <>
