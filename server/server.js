@@ -8,9 +8,7 @@ const Tesseract = require("tesseract.js");
 require("dotenv").config();
 
 const app = express();
-app.use(cors({
-    origin:"https://social-media-content-analyzer-5rme5a76u-amanxxxsinghs-projects.vercel.app"
-}));
+app.use(cors());
 app.use(express.json());
 
 const upload = multer({ dest: "./uploads/" });
@@ -36,13 +34,11 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       const dataBuffer = fs.readFileSync(filePath);
       const data = await pdf(dataBuffer);
       extractedText = data.text;
-    } 
-    else if (fileType.startsWith("image/")) {
+    } else if (fileType.startsWith("image/")) {
       console.log("Processing Image...");
       const result = await Tesseract.recognize(filePath, "eng");
       extractedText = result.data.text;
-    } 
-    else {
+    } else {
       return res.status(400).json({ error: "Unsupported file type" });
     }
 
@@ -52,13 +48,11 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     // fs.unlinkSync(filePath);
 
     res.json({ text: extractedText, suggestions });
-
   } catch (error) {
     console.error("SERVER ERROR:", error);
     res.status(500).json({ error: error.message });
   }
 });
-
 
 async function analyzeContentWithAI(text) {
   try {
@@ -69,7 +63,7 @@ async function analyzeContentWithAI(text) {
         messages: [
           {
             role: "system",
-            content:  `
+            content: `
 You are a professional social media marketing consultant.
 
 Rules:
@@ -81,36 +75,33 @@ Rules:
 - Only provide improvement suggestions.
 - Keep suggestions short and direct.
 - Return exactly 5 bullet points.
-`},
+`,
+          },
           {
             role: "user",
-            content: `Analyze this social media post and give 5 short improvement suggestions:\n\n${text}`
-          }
-        ]
+            content: `Analyze this social media post and give 5 short improvement suggestions:\n\n${text}`,
+          },
+        ],
       },
       {
-      headers: {
-  "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-  "Content-Type": "application/json",
-  "HTTP-Referer": "https://social-media-content-analyzer-5rme5a76u-amanxxxsinghs-projects.vercel.app",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer":
+            "https://social-media-content-analyzer-5rme5a76u-amanxxxsinghs-projects.vercel.app",
 
-  "X-Title": "Social Media Analyzer"
-}
-
-
-      }
+          "X-Title": "Social Media Analyzer",
+        },
+      },
     );
 
     return response.data.choices[0].message.content;
-
   } catch (error) {
     console.error("AI ERROR:", error.response?.data || error.message);
     return "AI suggestion failed.";
   }
 }
 
-
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
