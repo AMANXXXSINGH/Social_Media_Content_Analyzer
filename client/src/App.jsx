@@ -23,27 +23,35 @@ function App() {
     }
   }, [suggestions]);
 
-  const handleUpload = async () => {
-    if (!file) return alert("Please select a file");
+ const handleUpload = async () => {
+  if (!file) return alert("Please select a file");
 
-    const formData = new FormData();
-    formData.append("file", file);
+  const formData = new FormData();
+  formData.append("file", file);
 
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        "https://social-media-content-analyzer-backe.vercel.app",
-        formData,
-      );
-      setText(res.data.text);
-      setSuggestions(res.data.suggestions);
-    } catch (err) {
-      console.error(err);
-      alert("Upload failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+
+    const res = await axios.post(
+      "https://social-media-content-analyzer-backe.vercel.app/upload",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    setText(res.data.extractedText);
+    setSuggestions(res.data.suggestions);
+
+  } catch (err) {
+    console.error(err);
+    alert("Upload failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="font-poppins  p-5  items-center flex flex-col min-h-screen">
