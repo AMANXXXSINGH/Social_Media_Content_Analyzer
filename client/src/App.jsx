@@ -31,10 +31,14 @@ function App() {
 
     try {
       setLoading(true);
-      const res = await axios.post(`${API_URL}/upload`, formData);
+      const res = await axios.post(
+        "https://social-media-content-analyzer-sxzk.onrender.com/upload",
+        formData,
+      );
       setText(res.data.text);
       setSuggestions(res.data.suggestions);
     } catch (err) {
+      console.error(err);
       alert("Upload failed");
     } finally {
       setLoading(false);
